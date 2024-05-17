@@ -33,6 +33,7 @@ router.use(express.json()); // Replaces Body Parser
 router.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.header('origin'));
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    // v to pass credential back and forth
     res.header('Access-Control-Allow-Credentials', 'true');
 
     if (req.method == 'OPTIONS') {
@@ -44,25 +45,29 @@ router.use((req, res, next) => {
 });
 
 /** Passport & SAML Routes */
+// pass in request response and next functions
 router.get('/login', passport.authenticate('saml', config.saml.options), (req, res, next) => {
+    //redirect user to client side after user authenticated
     return res.redirect('http://localhost:3000');
 });
-
+//for not authenticate with okta, this route will not be used
 router.post('/login/callback', passport.authenticate('saml', config.saml.options), (req, res, next) => {
+    //what okta(IDP) will call to help with log in
     return res.redirect('http://localhost:3000');
 });
-
+//what to do after the authentication route
 router.get('/whoami', (req, res, next) => {
     if (!req.isAuthenticated()) {
         logging.info('User not authenticated');
-
+        //return 401 for axios to boot back to login page
         return res.status(401).json({
             message: 'Unauthorized'
         });
     } else {
+        //if authenticated
         logging.info('User authenticated');
         logging.info(req.user);
-
+        //return 200 and retrun user as a json return
         return res.status(200).json({ user: req.user });
     }
 });
