@@ -4,7 +4,7 @@ import logging from './config/logging';
 
 export interface IApplicationProps {}
 
-const Application: React.FunctionComponent<IApplicationProps> = props => {
+const Application: React.FunctionComponent<IApplicationProps> = (props) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [email, setEmail] = useState<string>('');
 
@@ -13,38 +13,32 @@ const Application: React.FunctionComponent<IApplicationProps> = props => {
 
         axios({
             method: 'GET',
-            url: 'http://localhost:1337/whoami',
+            url: 'http://localhost:2000/whoami',
             withCredentials: true
         })
-        .then(response => {
-            logging.info(response.data.user, 'SAML');
+            .then((response) => {
+                logging.info(response.data.user, 'SAML');
 
-            if (response.data.user.nameID)
-            {
-                setEmail(response.data.user.nameID);
-                setLoading(false);
-            }
-            else
-            {
-                RedirectToLogin();    
-            }
-        })
-        .catch(error => {
-            logging.error(error, 'SAML');
-            RedirectToLogin();
-        })
+                if (response.data.user.nameID) {
+                    setEmail(response.data.user.nameID);
+                    setLoading(false);
+                } else {
+                    RedirectToLogin();
+                }
+            })
+            .catch((error) => {
+                logging.error(error, 'SAML');
+                RedirectToLogin();
+            });
     }, []);
 
     const RedirectToLogin = () => {
-        window.location.replace('http://localhost:1337/login');
-    }
+        window.location.replace('http://localhost:2000/login');
+    };
 
-    if (loading)
-        return <p>loading ...</p>
+    if (loading) return <p>loading ...</p>;
 
-    return (
-        <p>Hello {email}!</p>
-    );
-}
+    return <p>Hello {email}!</p>;
+};
 
 export default Application;
