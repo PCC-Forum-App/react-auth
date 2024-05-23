@@ -53,7 +53,9 @@ router.get('/login', passport.authenticate('saml', config.saml.options), (req, r
 //for not authenticate with okta, this route will not be used
 router.post('/login/callback', passport.authenticate('saml', config.saml.options), (req, res, next) => {
     //what okta(IDP) will call to help with log in
-    return res.redirect('http://localhost:3000');
+
+    return res.redirect('https://trial-2732474.okta.com/home/firebase/0oaejr82suaoObwos697/59165');
+    //return res.redirect('http://localhost:3000');
 });
 //what to do after the authentication route
 router.get('/whoami', (req, res, next) => {
