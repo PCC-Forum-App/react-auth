@@ -18,7 +18,7 @@ const config = {
         }
     },
     server: {
-        //sever side
+        //server side
         port: 2000
     },
     session: {

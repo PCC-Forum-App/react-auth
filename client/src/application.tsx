@@ -9,17 +9,17 @@ const Application: React.FunctionComponent<IApplicationProps> = (props) => {
     const [loading, setLoading] = useState<boolean>(true);
     // email to grab the email from OKTA SAML integration
     const [email, setEmail] = useState<string>('');
-    // 
+    //
     useEffect(() => {
         //just console log to check
         logging.info('Initiating SAML check.', 'SAML');
-        
+
         axios({
             method: 'GET',
             //get url from backend
             url: 'http://localhost:2000/whoami',
             //the whoami route gets the credentials
-            //with this axios can tell backend to activate credentials
+            //with this, axios can tell backend to activate credentials
             //section for passport and express to authenticate
             withCredentials: true
         })
@@ -37,7 +37,6 @@ const Application: React.FunctionComponent<IApplicationProps> = (props) => {
                 }
             })
             .catch((error) => {
-                
                 logging.error(error, 'SAML');
                 RedirectToLogin();
             });

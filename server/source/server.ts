@@ -48,17 +48,35 @@ router.use((req, res, next) => {
 // pass in request response and next functions
 router.get('/login', passport.authenticate('saml', config.saml.options), (req, res, next) => {
     //redirect user to client side after user authenticated
+
     return res.redirect('http://localhost:3000');
 });
+
 //for not authenticate with okta, this route will not be used
 router.post('/login/callback', passport.authenticate('saml', config.saml.options), (req, res, next) => {
     //what okta(IDP) will call to help with log in
 
-    return res.redirect('https://trial-2732474.okta.com/home/firebase/0oaejr82suaoObwos697/59165');
-    //return res.redirect('http://localhost:3000');
+    logging.info(`We are inside /login/callcback, and the req object is ${req}`);
+    return res.redirect('http://localhost:3000');
+    //return res.send(req.user);
+
+    // console.log('req is ', req);
+    // console.log('req.user is ', req.user);
+    // //console.log('req.user.nameID is ', req.user.nameID);
+
+    // //return res.redirect('https://trial-2732474.okta.com/home/firebase/0oaejr82suaoObwos697/59165');
+    // return res.redirect('http://localhost:3000');
 });
 //what to do after the authentication route
 router.get('/whoami', (req, res, next) => {
+    logging.info(`We are inside /whoami, and the req.user object is `);
+
+    console.dir(req.user);
+
+    const user = req.user as { [key: string]: any }; // Type assertion FOR TYPESCRIPT
+    const nameID = user.nameID;
+    console.log('WE ARE FINALLY PRINTING OUT THE USER NAMEID', nameID);
+
     if (!req.isAuthenticated()) {
         logging.info('User not authenticated');
         //return 401 for axios to boot back to login page
